@@ -3,11 +3,12 @@ package template
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
 )
 
-func cloneProject(projectName string, RelPath string) {
+func cloneProject(projectName string, RelPath string, url string) {
 
 	// 1. Pick the name of the project from options and AbsPath.
 	// 2. Create a directory in the name mentioned above and initialize a git repo.
@@ -19,7 +20,7 @@ func cloneProject(projectName string, RelPath string) {
 	cachedPath := "../../cached"
 
 	_, err := git.PlainClone(cachedPath, false, &git.CloneOptions{
-		URL:      "https://github.com/wangyoucao577/go-project-layout.git",
+		URL:      url,
 		Progress: os.Stdout,
 	})
 
@@ -33,7 +34,7 @@ func cloneProject(projectName string, RelPath string) {
 	// 5. Move the contents into user-mentioned folder.
 
 	// 6. remove the cached folder
-	os.Remove(cachedPath)
+	os.RemoveAll(cachedPath)
 
 }
 
@@ -83,6 +84,12 @@ func createFile(path string) {
 		fmt.Print(err)
 		return
 	}
+	// if its a file ending in .go add title to it
+	if isGoFile(path) {
+		title := "package " + getDirFromPath(path)
+		os.WriteFile(path, []byte(title), 0644)
+	}
+
 	fmt.Printf("File Created at %s", path)
 }
 
@@ -93,4 +100,27 @@ func removeDir(path string) {
 		return
 	}
 	fmt.Printf("Successfully deleted at %s", path)
+}
+
+// SEPERATOR SHOULD BE DIFFERENT FOR WINDOWS AND LINUX BASED SYSTEMS.
+
+func getFileFromPath(path string) string {
+	splits := strings.Split(path, "/")
+	index := len(splits) - 1
+	return splits[index]
+}
+
+func getDirFromPath(path string) string {
+	splits := strings.Split(path, "/")
+	index := len(splits) - 2
+	return splits[index]
+}
+
+func isGoFile(path string) bool {
+	fileName := getFileFromPath(path)
+	fileSplit := strings.Split(fileName, ".")
+	if len(fileSplit) == 2 && fileSplit[1] == "go" {
+		return true
+	}
+	return false
 }
