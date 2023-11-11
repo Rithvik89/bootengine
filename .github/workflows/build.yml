@@ -14,4 +14,4 @@ jobs:
       - name: Install GO
         uses: actions/setup-go@v2
       - run: make beb
-      - run: echo Hello
+      - run: ls
