@@ -1,0 +1,17 @@
+name: Build bootengine
+
+on:
+  push:
+    branches: ["alpha"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Install GO
+        uses: actions/setup-go@v2
+      - run: make beb
+      - run: echo Hello
