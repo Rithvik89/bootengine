@@ -17,16 +17,15 @@ jobs:
       - run: ls
       - name: Setup AWS CLI
         uses: unfor19/install-aws-cli-action@master
-      - run: aws s3 ls
-        env:  
-            ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
-            ACCESS_KEY_SECRET: ${{ secrets.ACCESS_KEY_SECRET }}
-            REGION: ${{ secrets.REGION }}
+      - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+            aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+            aws-region: ${{ secrets.REGION }}
+      - name: List resources in Bucket
+        run: aws s3 ls
       - name: Push to S3
         run: aws s3 cp ./devboot s3://devboot
-        env:  
-          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
-          ACCESS_KEY_SECRET: ${{ secrets.ACCESS_KEY_SECRET }}
-          REGION: ${{ secrets.REGION }}
 
 
