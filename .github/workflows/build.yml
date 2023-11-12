@@ -16,7 +16,7 @@ jobs:
       - run: make beb
       - run: ls
       - name: Setup AWS CLI
-        uses: ItsKarma/aws-cli@v1.70.0
+        uses: unfor19/install-aws-cli-action@master
       - run: aws s3 ls
         env:  
             ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
