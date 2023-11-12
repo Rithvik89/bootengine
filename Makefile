@@ -1,2 +1,2 @@
 beb:
-	go build -o cli/build .
+	go build -o devboot .
