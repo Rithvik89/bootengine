@@ -25,7 +25,7 @@ jobs:
       - name: Push to S3
         run: aws s3 cp ./devboot s3://devboot
         env:  
-          ACCESS_KEY: ${{ secrets.ACCESS_KEY }
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
           ACCESS_KEY_SECRET: ${{ secrets.ACCESS_KEY_SECRET }}
           REGION: ${{ secrets.REGION }}
 
