@@ -16,7 +16,7 @@ jobs:
       - run: make beb
       - run: ls
       - name: Setup AWS CLI
-        use:  chrislennon/action-aws-cli@v1.1
+        uses:  chrislennon/action-aws-cli@v1.1
       - run: aws s3 ls
         env:  
             ACCESS_KEY: ${{ secrets.ACCESS_KEY }
