@@ -19,7 +19,7 @@ jobs:
         uses:  chrislennon/action-aws-cli@v1.1
       - run: aws s3 ls
         env:  
-            ACCESS_KEY: ${{ secrets.ACCESS_KEY }
+            ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
             ACCESS_KEY_SECRET: ${{ secret.ACCESS_KEY_SECRET }}
             REGION: ${{ secrets.REGION }}
       - name: Push to S3
