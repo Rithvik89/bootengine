@@ -10,7 +10,7 @@ func TestCreateDeepCopy(t *testing.T) {
 }
 
 func TestCloneProject(t *testing.T) {
-	cloneProject("boot", "../../", "https://github.com/wangyoucao577/go-project-layout.git")
+	CloneProject("boot1", "/home/ra/Documents", "https://github.com/wangyoucao577/go-project-layout.git")
 }
 
 func TestRemoveNonEmptyDir(t *testing.T) {
