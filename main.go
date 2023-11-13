@@ -1,6 +1,6 @@
 package main
 
-import "cli/cmd/cli"
+import "bootengine/cmd/cli"
 
 func main() {
 	cli.Execute()

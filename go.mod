@@ -1,4 +1,4 @@
-module cli
+module bootengine
 
 go 1.20
 
