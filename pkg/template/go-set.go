@@ -8,7 +8,34 @@ import (
 	"gopkg.in/src-d/go-git.v4"
 )
 
-func cloneProject(projectName string, RelPath string, url string) {
+func isFeasibleToCreateProject(path string, name string) bool {
+	fmt.Println(path)
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Printf("path invalid: %s", err)
+		return false
+	} else {
+		// check what if the path mentioned is of a file return false.
+		fileInfo, err := file.Stat()
+		if err != nil {
+			panic(err)
+		}
+		if !fileInfo.IsDir() {
+			fmt.Print("cannot create a project here as mentioned path is of a file")
+			return false
+		}
+		files, err := file.Readdir(-1)
+		for _, f := range files {
+			if name == f.Name() {
+				fmt.Printf("Dir with name %s already exits", f.Name())
+				return false
+			}
+		}
+		return true
+	}
+}
+
+func CloneProject(projectName string, DestinationPath string, url string) {
 
 	// 1. Pick the name of the project from options and AbsPath.
 	// 2. Create a directory in the name mentioned above and initialize a git repo.
@@ -16,16 +43,36 @@ func cloneProject(projectName string, RelPath string, url string) {
 	// 3. Load the respective language repo from github.
 	// currentpath, err := os.Getwd()
 	// projectName is where we clone our project
-	path := RelPath + projectName
-	cachedPath := "../../cached"
+	path := DestinationPath + "/" + projectName
+
+	// TODO: check for scenerios like null strings in Projectname,destinationpath,url
+	if url == "" {
+		url = "https://github.com/wangyoucao577/go-project-layout.git"
+	}
+	if DestinationPath == "" || projectName == "" {
+		panic("Use valid Destination path and project name")
+	}
+
+	// *check if there is some project with the projectname as mentioned above in the dest path.
+
+	if !isFeasibleToCreateProject(DestinationPath, projectName) {
+		return
+	}
+
+	// TODO: instead of clone in onto disk why can't we try in memory clone ?.
+	cachedPath := "./cached"
 
 	_, err := git.PlainClone(cachedPath, false, &git.CloneOptions{
 		URL:      url,
 		Progress: os.Stdout,
 	})
+	if err != nil {
+		fmt.Printf("Error initializing repository: %v\n", err)
+		return
+	}
 
 	if err != nil {
-		panic("Not able to clone content")
+		panic("Not able to clone content into cached repo.")
 	}
 
 	createDeepCopy(cachedPath, path, true)
@@ -70,6 +117,14 @@ func createDeepCopy(source string, destination string, root bool) {
 }
 
 func createFolder(path string, root bool) {
+	if root {
+		_, err := git.PlainInit(path, false)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		return
+	}
 	err := os.Mkdir(path, 0755)
 	if err != nil {
 		fmt.Printf("Not able to create a directory : %s", err)
