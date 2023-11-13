@@ -1,7 +1,7 @@
 package main
 
-import "bootengine/cmd/cli"
+import "bootengine/cmd"
 
 func main() {
-	cli.Execute()
+	cmd.Execute()
 }
