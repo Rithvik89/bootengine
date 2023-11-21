@@ -16,7 +16,7 @@ func CreateFile(path string) {
 	}
 	// if its a file ending in .go add title to it
 	if isGoFile(path) {
-		title := "package " + getDirFromPath(path)
+		title := "package " + getDirFromFilePath(path)
 		os.WriteFile(path, []byte(title), 0644)
 	}
 
@@ -41,7 +41,7 @@ func CreateFolder(path string, root bool) {
 }
 
 func isGoFile(path string) bool {
-	fileName := getFileFromPath(path)
+	fileName := getFileFromFilePath(path)
 	fileSplit := strings.Split(fileName, ".")
 	if len(fileSplit) == 2 && fileSplit[1] == "go" {
 		return true
@@ -49,15 +49,21 @@ func isGoFile(path string) bool {
 	return false
 }
 
-func getFileFromPath(path string) string {
+func getFileFromFilePath(path string) string {
 	splits := strings.Split(path, "/")
 	index := len(splits) - 1
 	return splits[index]
 }
 
-func getDirFromPath(path string) string {
+func getDirFromFilePath(path string) string {
 	splits := strings.Split(path, "/")
 	index := len(splits) - 2
+	return splits[index]
+}
+
+func GetDirFromDirPath(path string) string {
+	splits := strings.Split(path, "/")
+	index := len(splits) - 1
 	return splits[index]
 }
 

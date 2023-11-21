@@ -106,6 +106,10 @@ func createDeepCopy(source string, destination string, root bool) {
 		return
 	}
 
+	if utils.GetDirFromDirPath(destination) == ".git" {
+		return
+	}
+
 	utils.CreateFolder(destination, root)
 
 	for _, fileInfos := range fileInfos {
