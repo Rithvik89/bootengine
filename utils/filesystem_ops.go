@@ -23,21 +23,22 @@ func CreateFile(path string) {
 	fmt.Printf("File Created at %s", path)
 }
 
-func CreateFolder(path string, root bool) {
+func CreateFolder(path string, root bool) *git.Repository {
 	if root {
-		_, err := git.PlainInit(path, false)
+		repo, err := git.PlainInit(path, false)
 		if err != nil {
 			fmt.Println(err)
-			return
+			return nil
 		}
-		return
+		return repo
 	}
 	err := os.Mkdir(path, 0755)
 	if err != nil {
 		fmt.Printf("Not able to create a directory : %s", err)
-		return
+		return nil
 	}
 	fmt.Printf("Directory created at %s", path)
+	return nil
 }
 
 func isGoFile(path string) bool {

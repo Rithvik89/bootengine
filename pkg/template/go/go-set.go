@@ -4,8 +4,10 @@ import (
 	"bootengine/utils"
 	"fmt"
 	"os"
+	"time"
 
 	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 func isFeasibleToCreateProject(path string, name string) bool {
@@ -75,7 +77,22 @@ func CloneProject(projectName string, DestinationPath string, url string) {
 		panic("Not able to clone content into cached repo.")
 	}
 
-	createDeepCopy(cachedPath, path, true)
+	repo := createDeepCopy(cachedPath, path, true)
+	// git add and git commit the repo.
+	worktree, err := repo.Worktree()
+	if err != nil {
+		fmt.Println("Error getting worktree:", err)
+		return
+	}
+	commit, err := worktree.Commit("Project Layout Structured by devboot", &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "devboot",
+			Email: "root@devboot.in",
+			When:  time.Now(),
+		},
+	})
+
+	fmt.Println("Changes committed. Commit Hash:", commit)
 
 	// 4. Prepare it as per language run book.
 	// 5. Move the contents into user-mentioned folder.
@@ -85,11 +102,11 @@ func CloneProject(projectName string, DestinationPath string, url string) {
 
 }
 
-func createDeepCopy(source string, destination string, root bool) {
+func createDeepCopy(source string, destination string, root bool) *git.Repository {
 	files, err := os.Open(source) //open the directory to read files in the directory
 	if err != nil {
 		fmt.Println("error opening directory:", err) //print error if directory is not opened
-		return
+		return nil
 	}
 
 	defer files.Close() //close the directory opened
@@ -97,25 +114,25 @@ func createDeepCopy(source string, destination string, root bool) {
 	fileInfo, err := files.Stat()
 	if !fileInfo.IsDir() {
 		utils.CreateFile(destination)
-		return
+		return nil
 	}
 
 	fileInfos, err := files.Readdir(-1) //read the files from the directory
 	if err != nil {
 		fmt.Println("error reading directory:", err) //if directory is not read properly print error message
-		return
+		return nil
 	}
 
 	if utils.GetDirFromDirPath(destination) == ".git" {
-		return
+		return nil
 	}
 
-	utils.CreateFolder(destination, root)
+	repo := utils.CreateFolder(destination, root)
 
 	for _, fileInfos := range fileInfos {
 		subPathDestination := destination + "/" + fileInfos.Name()
 		subPathSource := source + "/" + fileInfos.Name()
 		createDeepCopy(subPathSource, subPathDestination, false)
 	}
-	return
+	return repo
 }
