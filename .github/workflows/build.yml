@@ -2,7 +2,7 @@ name: Build bootengine
 
 on:
   push:
-    branches: ["alpha"]
+    branches: ["main"]
 
 jobs:
   build:
